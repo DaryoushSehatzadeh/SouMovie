@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Sou Movie</string>
+
+    <string name="terms_and_conditions">
+    Welcome to SouMovie!\n\n
+
+    By using this app, you agree to the following terms:\n\n
+
+    <b>1. Eligibility</b>\n
+       You must be at least 18 years old to use this application. By using SouMovie, you confirm that you meet this requirement.\n\n
+
+    <b>2. User Responsibilities</b>\n
+       You agree not to misuse the app in any way, including but not limited to attempting to gain unauthorized access, distributing malicious software, or engaging in illegal activities.\n\n
+
+    <b>3. Privacy &amp; Data Collection</b>\n
+       We collect user data in accordance with our Privacy Policy. By using SouMovie, you consent to the collection and processing of your data as outlined in the Privacy Policy.\n\n
+
+    <b>4. Intellectual Property</b>\n
+       All content, trademarks, and intellectual property displayed in the app remain the sole property of SouMovie and its licensors. Unauthorized distribution or reproduction is strictly prohibited.\n\n
+
+    <b>5. Third-Party Services</b>\n
+       SouMovie may integrate third-party services, including advertisements and external links. We are not responsible for the content or privacy policies of these services.\n\n
+
+    <b>6. Termination</b>\n
+       We reserve the right to terminate or restrict access to the app at any time without prior notice if a user violates these terms or engages in prohibited behavior.\n\n
+
+    <b>7. Limitation of Liability</b>\n
+    <b>7. Limitation of Liability</b>\n
+       SouMovie is provided on an "as-is" basis. We do not guarantee uninterrupted service and are not liable for any damages arising from the use of the app.\n\n
+
+    <b>8. Changes to Terms</b>\n
+       We reserve the right to update these terms at any time. Continued use of the app after changes are made constitutes acceptance of the new terms.\n\n
+
+    <b>9. Governing Law</b>\n
+       These terms are governed by the laws of your jurisdiction. Any disputes will be resolved in accordance with local laws.\n\n
+
+    If you have any questions regarding these terms, please contact us at support@soumovie.com.\n\n
+
+    Thank you for using SouMovie!
+</string>
+
+
+
+
+</resources>
