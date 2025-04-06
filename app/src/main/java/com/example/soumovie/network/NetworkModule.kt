@@ -13,7 +13,7 @@ object NetworkModule {
 
     // Bearer token (API v4 Access Token) used for all requests
     // This token is required in the Authorization header
-    private const val AUTH_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkMDQ3NGVhMWIxMTlhZDRkNWZkZGY5YTNkYTYwY2VlYyIsIm5iZiI6MTc0MjE0OTMyNS4zMjQsInN1YiI6IjY3ZDcxNmNkMzE1MzhkZTYwOGYxYjc4NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ceKlaEGDZzOt_rs90dMTIps-WsOQDQX4BEGvHFg9d5U" // Replace with your actual full token
+    private const val AUTH_TOKEN = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkMDQ3NGVhMWIxMTlhZDRkNWZkZGY5YTNkYTYwY2VlYyIsIm5iZiI6MTc0MjE0OTMyNS4zMjQsInN1YiI6IjY3ZDcxNmNkMzE1MzhkZTYwOGYxYjc4NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ceKlaEGDZzOt_rs90dMTIps-WsOQDQX4BEGvHFg9d5U" // Replace with your actual full token
 
     // Interceptor that automatically adds the Authorization and Content-Type headers to each request
     private val authInterceptor = Interceptor { chain ->

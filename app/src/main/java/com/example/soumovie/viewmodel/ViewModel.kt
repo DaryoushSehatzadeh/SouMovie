@@ -1,5 +1,6 @@
 package com.example.soumovie.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.soumovie.data.*
 import com.example.soumovie.repository.MovieRepository
@@ -23,8 +24,10 @@ class MovieViewModel : ViewModel() {
             try {
                 val response = repository.getPopularMovies()
                 _popularMovies.value = response.results // response.results is a List<Result>
+//                Log.e("Results", response.results.toString()) FOR DEBUGGING
             } catch (e: Exception) {
                 // Handle error
+//                Log.e("API_ERROR", "Exception: ${e.message}") FOR DEBUGGING
             }
         }
     }
