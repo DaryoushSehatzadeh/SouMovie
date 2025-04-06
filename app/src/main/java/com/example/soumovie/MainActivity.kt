@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.soumovie.pages.TermsAndConditions
-import com.example.soumovie.pages.LandingPage
+import com.example.soumovie.pages.Movies
 import com.example.soumovie.pages.SplashScreen
 import com.example.soumovie.ui.theme.SouMovieTheme
 
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("landing") {
 
-                        LandingPage(navController)
+                        Movies(navController)
                     }
                 }
             }
