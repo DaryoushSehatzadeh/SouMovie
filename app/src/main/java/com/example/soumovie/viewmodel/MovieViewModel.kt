@@ -9,37 +9,36 @@ import kotlinx.coroutines.launch
 class MovieViewModel : ViewModel() {
     private val repository = MovieRepository() // No need to pass ApiService here
 
-    private val _popularMovies = MutableLiveData<List<Result>>()
-    val popularMovies: LiveData<List<Result>> = _popularMovies
+    private val _popularMovies = MutableLiveData<List<Result>?>()
+    val popularMovies: LiveData<List<Result>?> = _popularMovies
 
-    private val _allMovies = MutableLiveData<List<Result>>()
-    val allMovies: LiveData<List<Result>> = _allMovies // LiveData for all movies
+    private val _allMovies = MutableLiveData<List<Result>?>()
+    val allMovies: LiveData<List<Result>?> = _allMovies
 
     private val _movieDetails = MutableLiveData<MovieDetails>()
     val movieDetails: LiveData<MovieDetails> = _movieDetails
 
-    // Function to load popular movies
     fun loadPopularMovies() {
+        // Call your API and update the LiveData
+        // Assume fetchPopularMovies() is a suspend function to fetch data
         viewModelScope.launch {
             try {
-                val response = repository.getPopularMovies()
-                _popularMovies.value = response.results // response.results is a List<Result>
-//                Log.e("Results", response.results.toString()) FOR DEBUGGING
+                _popularMovies.value = repository.getPopularMovies()
             } catch (e: Exception) {
-                // Handle error
-//                Log.e("API_ERROR", "Exception: ${e.message}") FOR DEBUGGING
+                // Handle exception
+                _popularMovies.value = null
             }
         }
     }
 
-    // Function to load all movies
     fun loadAllMovies() {
+        // Call your API and update the LiveData
         viewModelScope.launch {
             try {
-                val response = repository.getAllMovies() // Assuming this method exists
-                _allMovies.value = response.results // response.results is a List<Result>
+                _allMovies.value = repository.getAllMovies()
             } catch (e: Exception) {
-                // Handle error
+                // Handle exception
+                _allMovies.value = null
             }
         }
     }

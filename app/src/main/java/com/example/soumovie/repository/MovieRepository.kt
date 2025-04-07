@@ -10,13 +10,15 @@ class MovieRepository {
     private val apiService = NetworkModule.api
 
     // Fetch popular movies
-    suspend fun getPopularMovies(): AllMovies {
-        return apiService.getPopularMovies() // Assuming you have this method in your TMDBApi interface
+    suspend fun getPopularMovies(): List<com.example.soumovie.data.Result> {
+        val response = apiService.getPopularMovies()  // This returns AllMovies
+        return response.results  // Extract only the List<Result> from the response
     }
 
     // Fetch all movies (you may need to define this in your API interface)
-    suspend fun getAllMovies(): AllMovies {
-        return apiService.getAllMovies() // Assuming this method exists
+    suspend fun getAllMovies(): List<com.example.soumovie.data.Result> {
+        val response = apiService.getAllMovies()  // This returns AllMovies
+        return response.results  // Extract only the List<Result> from the response
     }
 
     // Fetch movie details by ID

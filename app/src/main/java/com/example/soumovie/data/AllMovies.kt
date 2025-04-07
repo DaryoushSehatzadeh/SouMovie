@@ -5,7 +5,7 @@ data class AllMovies(
     @SerializedName("page")
     val page: Int,
     @SerializedName("results")
-    val results: List<Result>,
+    val results: List<Result>,  // This is where the list of movie results will be stored
     @SerializedName("total_pages")
     val totalPages: Int,
     @SerializedName("total_results")
