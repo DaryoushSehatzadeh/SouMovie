@@ -17,8 +17,15 @@ class MovieRepository {
 
     // Fetch all movies (you may need to define this in your API interface)
     suspend fun getAllMovies(): List<com.example.soumovie.data.Result> {
-        val response = apiService.getAllMovies()  // This returns AllMovies
-        return response.results  // Extract only the List<Result> from the response
+
+        val allMovies = mutableListOf<com.example.soumovie.data.Result>()
+
+        for (currentPage in 1..5) {
+            val response = apiService.getAllMovies(page = currentPage)
+            allMovies.addAll(response.results)
+        }
+
+        return allMovies  // Extract only the List<Result> from the response
     }
 
     // Fetch movie details by ID

@@ -2,8 +2,10 @@ package com.example.soumovie.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -22,6 +24,10 @@ import com.example.soumovie.viewmodel.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.soumovie.data.Result
 import com.example.soumovie.model.*
 
@@ -41,7 +47,7 @@ fun Movies(navController: NavHostController) {
     }
 
     val popularMovies = popular?.take(10)
-    val allMovies = all?.take(100)
+    val allMovies = all?.drop(10)
 
     Column(
         modifier = Modifier
@@ -72,9 +78,9 @@ fun Movies(navController: NavHostController) {
             )
 
             // Display popular movies in a LazyColumn
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
                 items(popularMovies ?: emptyList()) { movie ->  // Ensure allMovies is a List
-                    MovieItem(movie = movie)  // Passing MovieResult object
+                    MovieItem(movie = movie, navController = navController)  // Passing MovieResult object
                 }
             }
 
@@ -91,7 +97,7 @@ fun Movies(navController: NavHostController) {
 
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(allMovies ?: emptyList()) { movie ->  // Ensure allMovies is a List
-                    MovieItem(movie = movie)  // Passing MovieResult object
+                    MovieItem(movie = movie, navController = navController)  // Passing MovieResult object
                 }
             }
         }
@@ -99,13 +105,18 @@ fun Movies(navController: NavHostController) {
 }
 
 @Composable
-fun MovieItem(movie: Result) {
+fun MovieItem(movie: Result, navController: NavHostController) {
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .background(Color.Gray, shape = RoundedCornerShape(8.dp))
-            .padding(16.dp),
+            .padding(16.dp)
+            .clickable {
+                // Navigate to movie details and pass the movie id
+                navController.navigate("movieDetails/${movie.id}")
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Movie poster image
@@ -114,7 +125,14 @@ fun MovieItem(movie: Result) {
                 .size(80.dp)
                 .background(Color.White)  // Set the background color to white
         ) {
-            // Optionally, add content inside the Box if needed
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("https://image.tmdb.org/t/p/w500/${movie.posterPath}")  // Construct the URL
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "Movie Poster",
+                modifier = Modifier.fillMaxSize(),  // Fill the Box size with the image
+            )
         }
 
 

@@ -15,8 +15,8 @@ class MovieViewModel : ViewModel() {
     private val _allMovies = MutableLiveData<List<Result>?>()
     val allMovies: LiveData<List<Result>?> = _allMovies
 
-    private val _movieDetails = MutableLiveData<MovieDetails>()
-    val movieDetails: LiveData<MovieDetails> = _movieDetails
+    private val _movieDetails = MutableLiveData<MovieDetails?>()
+    val movieDetails: MutableLiveData<MovieDetails?> = _movieDetails
 
     fun loadPopularMovies() {
         // Call your API and update the LiveData
@@ -47,10 +47,10 @@ class MovieViewModel : ViewModel() {
     fun loadMovieDetails(id: Int) {
         viewModelScope.launch {
             try {
-                val details = repository.getMovieDetails(id)
-                _movieDetails.value = details
+                val response = repository.getMovieDetails(id) // API call
+                _movieDetails.postValue(response)
             } catch (e: Exception) {
-                // Handle error
+                _movieDetails.value = null
             }
         }
     }

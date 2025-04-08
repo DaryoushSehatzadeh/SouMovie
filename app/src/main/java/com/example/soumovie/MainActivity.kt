@@ -9,6 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.soumovie.pages.MovieDetails
 import com.example.soumovie.pages.TermsAndConditions
 import com.example.soumovie.pages.Movies
 import com.example.soumovie.pages.SplashScreen
@@ -35,6 +36,10 @@ class MainActivity : ComponentActivity() {
                     composable("landing") {
 
                         Movies(navController)
+                    }
+                    composable("movieDetails/{movieId}") { backStackEntry ->
+                        val movieId = backStackEntry.arguments?.getString("movieId")?.toInt() ?: 0
+                        MovieDetails(movieId = movieId)  // Pass the movieId to the MovieDetails screen
                     }
                 }
             }
