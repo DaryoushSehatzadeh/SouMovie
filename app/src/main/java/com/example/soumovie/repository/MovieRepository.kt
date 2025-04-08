@@ -1,7 +1,9 @@
 package com.example.soumovie.repository
 
 import com.example.soumovie.data.AllMovies
+import com.example.soumovie.data.CastDetails
 import com.example.soumovie.data.MovieDetails
+import com.example.soumovie.data.Reviews
 import com.example.soumovie.network.NetworkModule
 
 class MovieRepository {
@@ -32,4 +34,15 @@ class MovieRepository {
     suspend fun getMovieDetails(id: Int): MovieDetails {
         return apiService.getMovieDetails(id) // Assuming this method exists in TMDBApi
     }
+
+    // Fetch cast by movie ID
+    suspend fun getCast(id: Int): CastDetails {
+        return apiService.getCast(id) // Assuming this method exists in TMDBApi
+    }
+
+    // Fetch reviews by movie ID
+    suspend fun getReviews(id: Int): Reviews {
+        return apiService.getReviews(id) // Assuming this method exists in TMDBApi
+    }
+
 }

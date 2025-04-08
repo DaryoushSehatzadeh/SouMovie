@@ -1,5 +1,6 @@
 package com.example.soumovie.pages
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,13 +35,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.soumovie.data.MovieDetails
+import com.example.soumovie.model.CastUIModel
+import com.example.soumovie.model.ReviewUIModel
 import com.example.soumovie.viewmodel.MovieViewModel
 
+enum class ActiveTab {
+    DESCRIPTION, CAST, REVIEWS
+}
 
 @Composable
 fun MovieDetails(movieId: Int) {
@@ -48,18 +56,53 @@ fun MovieDetails(movieId: Int) {
 
     // Observe movie details
     val movieDetails by movieViewModel.movieDetails.observeAsState()
+    val castDetails by movieViewModel.castDetails.observeAsState()
+    val reviewDetails by movieViewModel.reviewDetails.observeAsState()
 
     var description by remember { mutableStateOf("") }
+    var cast by remember { mutableStateOf<List<CastUIModel>>(emptyList()) }
+    var reviews by remember { mutableStateOf<List<ReviewUIModel>>(emptyList()) }
+
+    var activeTab by remember { mutableStateOf(ActiveTab.DESCRIPTION) }
 
     // Fetch movie details when the screen is first displayed
     LaunchedEffect(movieId) {
         movieViewModel.loadMovieDetails(movieId)
+        movieViewModel.loadCastDetails(movieId)
+        movieViewModel.loadReviewDetails(movieId)
     }
 
     // Update description when movieDetails is populated
     LaunchedEffect(movieDetails) {
         movieDetails?.let {
             description = it.overview
+        }
+    }
+
+    // Update cast when castDetails is populated
+    LaunchedEffect(castDetails) {
+        castDetails?.cast?.let { actor ->
+            cast = actor.map {
+                CastUIModel(
+                    actorName = it.name,
+                    character = it.character,
+                    profileImageUrl = "https://image.tmdb.org/t/p/w500${it.profilePath}"
+                )
+            }
+            Log.d("Reviews", "Loaded reviews: ${reviews.size}")
+        }
+    }
+
+    // Update reviews when reviewsDetails is populated
+    LaunchedEffect(reviewDetails) {
+        Log.d("Reviews", "API Response: $reviewDetails")
+        reviewDetails?.results?.let { data ->
+            reviews = data.map {
+                ReviewUIModel(
+                    author = it.author,
+                    content = it.content,
+                )
+            }
         }
     }
 
@@ -137,29 +180,24 @@ fun MovieDetails(movieId: Int) {
                         text = "Description",
                         modifier = Modifier
                             .offset(x = (-25).dp)
-                            .clickable{
-                                description = movie.overview
-                            },
-                        color = Color.White
+                            .clickable { activeTab = ActiveTab.DESCRIPTION },
+                        color = if (activeTab == ActiveTab.DESCRIPTION) Color.White else Color.DarkGray
                     )
 
                     Text(
                         text = "Reviews",
                         modifier = Modifier
                             .offset(x = 20.dp)
-                            .clickable{
-                            },
-                        color = Color.White
+                            .clickable { activeTab = ActiveTab.REVIEWS },
+                        color = if (activeTab == ActiveTab.REVIEWS) Color.White else Color.DarkGray
                     )
 
                     Text(
                         text = "Cast",
                         modifier = Modifier
                             .offset(x = 80.dp)
-                            .clickable{
-
-                            },
-                        color = Color.White
+                            .clickable { activeTab = ActiveTab.CAST },
+                        color = if (activeTab == ActiveTab.CAST) Color.White else Color.DarkGray
                     )
                 }
                 // Text box for description, etc
@@ -181,10 +219,107 @@ fun MovieDetails(movieId: Int) {
                         Column(
                             modifier = Modifier.verticalScroll(rememberScrollState()) // Enable vertical scroll
                         ) {
-                            Text(
-                                    text = description,
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
+                            when (activeTab) {
+                                ActiveTab.DESCRIPTION -> {
+                                    Text(
+                                        text = description,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                }
+
+                                ActiveTab.CAST -> {
+                                    Column {
+                                        cast.forEach {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(16.dp)
+                                                    .background(color = Color.LightGray)
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier
+                                                        .align(Alignment.CenterStart)
+                                                ){
+                                                    Image(
+                                                        painter = rememberAsyncImagePainter(
+                                                            model = ImageRequest.Builder(LocalContext.current)
+                                                                .data(it.profileImageUrl)
+                                                                .crossfade(true) // Enable crossfade for a smooth transition
+                                                                .build()
+                                                        ),
+                                                        contentDescription = "Picture of ${it.actorName}",
+                                                        modifier = Modifier
+                                                            .size(80.dp),
+                                                        contentScale = ContentScale.Fit // or ContentScale.Fit based on your needs
+                                                    )
+                                                }
+
+                                                Column(
+                                                    modifier = Modifier
+                                                        .width(190.dp)
+                                                        .align(Alignment.Center)
+                                                        .offset(x = 40.dp)
+                                                ) {
+                                                    Text(
+                                                        modifier = Modifier.align(Alignment.Start),
+                                                        text = it.actorName,
+                                                        style = MaterialTheme.typography.bodyMedium,
+                                                        color = Color.Black
+                                                    )
+                                                    Text(
+                                                        modifier = Modifier.align(Alignment.Start),
+                                                        text = it.character,
+                                                        style = MaterialTheme.typography.bodyMedium,
+                                                        color = Color.Black
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                ActiveTab.REVIEWS -> {
+                                    if (reviews.isNotEmpty()){
+                                        Column {
+                                            reviews.forEach {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(16.dp)
+                                                        .background(color = Color.LightGray)
+                                                ) {
+                                                    Column(
+                                                        modifier = Modifier
+                                                            .padding(16.dp)
+                                                            .align(Alignment.CenterStart)
+                                                    ) {
+                                                        Text(
+                                                            modifier = Modifier.align(Alignment.Start),
+                                                            text = it.author,
+                                                            style = MaterialTheme.typography.bodyMedium,
+                                                            color = Color.Black
+                                                        )
+
+                                                        Spacer(modifier = Modifier.height(10.dp))
+
+                                                        Text(
+                                                            modifier = Modifier.align(Alignment.Start),
+                                                            text = it.content,
+                                                            style = MaterialTheme.typography.bodyMedium,
+                                                            color = Color.Black
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        Text(
+                                            text = "There are no reviews for this movie",
+                                            style = MaterialTheme.typography.bodyLarge
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
