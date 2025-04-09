@@ -33,13 +33,13 @@ class MainActivity : ComponentActivity() {
 
                         TermsAndConditions(navController)
                     }
-                    composable("landing") {
+                    composable("Movies") {
 
                         Movies(navController)
                     }
                     composable("movieDetails/{movieId}") { backStackEntry ->
                         val movieId = backStackEntry.arguments?.getString("movieId")?.toInt() ?: 0
-                        MovieDetails(movieId = movieId)  // Pass the movieId to the MovieDetails screen
+                        MovieDetails(movieId = movieId, navController)  // Pass the movieId to the MovieDetails screen
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.example.soumovie.pages
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.soumovie.components.NavBar
 import com.example.soumovie.data.Result
 import com.example.soumovie.model.*
 
@@ -49,61 +51,79 @@ fun Movies(navController: NavHostController) {
     val popularMovies = popular?.take(10)
     val allMovies = all?.drop(10)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        // **Logo**
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "App Logo",
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .size(300.dp)
-                .padding(bottom = 32.dp)
-        )
-
-        // Display loading spinner if data is being fetched
-        if (popularMovies?.isEmpty() == true || allMovies?.isEmpty() == true) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-        } else {
-            // Display Top 10 Popular Movies
-            Text(
-                text = "Top 10 Popular Movies",
-                color = Color.White,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(16.dp)
+                .fillMaxSize()
+                .offset(y = (-100).dp)
+                .background(Color.Black),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            // **Logo**
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .size(250.dp)
+                    .padding(top = 125.dp)
             )
 
-            // Display popular movies in a LazyColumn
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                items(popularMovies ?: emptyList()) { movie ->  // Ensure allMovies is a List
-                    MovieItem(movie = movie, navController = navController)  // Passing MovieResult object
+            // Display loading spinner if data is being fetched
+            if (popularMovies?.isEmpty() == true || allMovies?.isEmpty() == true) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            } else {
+                // Display Top 10 Popular Movies
+                Text(
+                    text = "Top 10 Popular Movies",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                // Display popular movies in a LazyColumn
+                LazyRow(modifier = Modifier.fillMaxWidth()) {
+                    items(popularMovies ?: emptyList()) { movie ->  // Ensure allMovies is a List
+                        MovieItem(
+                            movie = movie,
+                            navController = navController
+                        )  // Passing MovieResult object
+                    }
+                }
+
+                // Add some space between the two lists
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Display All Movies (capped at 100)
+                Text(
+                    text = "All Movies",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(16.dp)
+                )
+
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    items(allMovies ?: emptyList()) { movie ->  // Ensure allMovies is a List
+                        MovieItem(
+                            movie = movie,
+                            navController = navController
+                        )  // Passing MovieResult object
+                    }
                 }
             }
-
-            // Add some space between the two lists
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Display All Movies (capped at 100)
-            Text(
-                text = "All Movies",
-                color = Color.White,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(16.dp)
-            )
-
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(allMovies ?: emptyList()) { movie ->  // Ensure allMovies is a List
-                    MovieItem(movie = movie, navController = navController)  // Passing MovieResult object
-                }
-            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .align(Alignment.BottomCenter)
+        ){
+            NavBar(navController, "Movies")
         }
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun MovieItem(movie: Result, navController: NavHostController) {
 
@@ -142,7 +162,7 @@ fun MovieItem(movie: Result, navController: NavHostController) {
         Column {
             Text(text = movie.title, color = Color.White, fontSize = 16.sp)
             Text(
-                text = "Rating: ${movie.voteAverage}",
+                text = "Rating: ${String.format("%.1f", movie.voteAverage)}",
                 color = Color.White.copy(alpha = 0.7f),
                 fontSize = 14.sp
             )

@@ -65,7 +65,7 @@ fun TermsAndConditions(navController: NavController) {
 
         // **Accept Button (Inactive until scrolled to bottom)**
         Button(
-            onClick = { navController.navigate("landing") },
+            onClick = { navController.navigate("Movies") },
             modifier = Modifier.fillMaxWidth()
                 .navigationBarsPadding(),
             enabled = isAtBottom // Button becomes enabled only if scrolled to the bottom
