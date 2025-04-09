@@ -18,9 +18,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,12 +39,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -46,14 +55,23 @@ import com.example.soumovie.components.NavBar
 import com.example.soumovie.data.MovieDetails
 import com.example.soumovie.model.CastUIModel
 import com.example.soumovie.model.ReviewUIModel
+import com.example.soumovie.repository.SavedMovieRepository
 import com.example.soumovie.viewmodel.MovieViewModel
+import com.example.soumovie.viewmodel.SavedMoviesViewModel
 
 enum class ActiveTab {
     DESCRIPTION, CAST, REVIEWS
 }
 
 @Composable
-fun MovieDetails(movieId: Int, navController: NavController) {
+fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMovieRepository) {
+
+    val viewModel = remember {
+        SavedMoviesViewModel(repository)
+    }
+
+    val watchlist by viewModel.getWatchlist().observeAsState(emptyList())
+
     val movieViewModel: MovieViewModel = viewModel()
 
     // Observe movie details
@@ -114,13 +132,41 @@ fun MovieDetails(movieId: Int, navController: NavController) {
             .fillMaxSize()
             .background(Color.Black),
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(10f)
+        ) {
+            IconButton(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
+                    .offset(y = 25.dp)
+                    .background(
+                        color = Color.Black.copy(alpha = 0.6f),
+                        shape = CircleShape
+                    )
+                    .size(40.dp)
+                    .shadow(4.dp, shape = CircleShape)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.White
+                )
+            }
+        }
         Box(modifier = Modifier
             .fillMaxSize()
             .offset(y = (-65).dp)
         ) {
             // Display loading spinner while data is being fetched
             if (movieDetails == null) {
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .offset(y = 200.dp)
+                ) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             } else {
@@ -161,6 +207,20 @@ fun MovieDetails(movieId: Int, navController: NavController) {
                             .width(200.dp),
                         style = MaterialTheme.typography.titleLarge
                     )
+
+                    // Save Button
+                    IconButton(
+                        onClick = { viewModel.addMovie(movie) },
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .offset(x = 40.dp, y = (-10).dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = "Save to Watchlist",
+                            tint = Color.White
+                        )
+                    }
 
                     // Release data and run time
                     Text(

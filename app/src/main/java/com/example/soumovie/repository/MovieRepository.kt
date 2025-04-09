@@ -45,4 +45,17 @@ class MovieRepository {
         return apiService.getReviews(id) // Assuming this method exists in TMDBApi
     }
 
+    // Search movies
+    suspend fun searchMovies(query: String): List<com.example.soumovie.data.Result>  {
+
+        val filteredMovies = mutableListOf<com.example.soumovie.data.Result>()
+
+        for (currentPage in 1..5) {
+            val response = apiService.searchMovies(page = currentPage, query)
+            filteredMovies.addAll(response.results)
+        }
+
+        return filteredMovies
+    }
+
 }

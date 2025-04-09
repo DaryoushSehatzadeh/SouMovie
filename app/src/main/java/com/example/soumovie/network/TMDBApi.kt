@@ -29,4 +29,8 @@ interface TMDBApi {
     // Get Review
     @GET("movie/{id}/reviews")
     suspend fun getReviews(@Path("id") id: Int): Reviews
+
+    // Search Movies
+    @GET("search/movie")
+    suspend fun searchMovies(@Query("page") page: Int, @Query("query") query: String): AllMovies
 }

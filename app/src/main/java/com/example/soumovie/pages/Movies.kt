@@ -25,16 +25,24 @@ import com.example.soumovie.viewmodel.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.soumovie.components.NavBar
 import com.example.soumovie.data.Result
-import com.example.soumovie.model.*
+import com.example.soumovie.repository.SavedMovieRepository
 
 @Composable
-fun Movies(navController: NavHostController) {
+fun Movies(navController: NavHostController, repository: SavedMovieRepository) {
+
+    val viewModel = remember {
+        SavedMoviesViewModel(repository)
+    }
+
+    val watchlist by viewModel.getWatchlist().observeAsState(emptyList())
+
     // Get the ViewModel
     val movieViewModel: MovieViewModel = viewModel()
 
@@ -125,7 +133,7 @@ fun Movies(navController: NavHostController) {
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun MovieItem(movie: Result, navController: NavHostController) {
+fun MovieItem(movie: Result, navController: NavController) {
 
     Row(
         modifier = Modifier

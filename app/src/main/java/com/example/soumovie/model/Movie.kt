@@ -18,5 +18,5 @@ data class Movie(
     @SerializedName("release_date")
     val releaseDate: String,
     @SerializedName("genre_ids")
-    val genreIds: List<Int>
+    val genreIds: List<Int>?
 )

@@ -24,6 +24,9 @@ class MovieViewModel : ViewModel() {
     private val _reviewDetails = MutableLiveData<Reviews?>()
     val reviewDetails: MutableLiveData<Reviews?> = _reviewDetails
 
+    private val _searchResults = MutableLiveData<List<Result>>()
+    val searchResults: LiveData<List<Result>> = _searchResults
+
     fun loadPopularMovies() {
         // Call your API and update the LiveData
         // Assume fetchPopularMovies() is a suspend function to fetch data
@@ -79,6 +82,16 @@ class MovieViewModel : ViewModel() {
                 _reviewDetails.value = repository.getReviews(id) // API call
             } catch (e: Exception) {
                 _reviewDetails.value = null
+            }
+        }
+    }
+
+    fun searchMovies(query: String) {
+        viewModelScope.launch {
+            try {
+                _searchResults.value = repository.searchMovies(query)
+            } catch (e: Exception) {
+                _searchResults.value = emptyList()
             }
         }
     }
