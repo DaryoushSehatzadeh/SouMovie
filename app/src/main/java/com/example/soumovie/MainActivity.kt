@@ -11,12 +11,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.soumovie.data.AppContainer
 import com.example.soumovie.data.SavedMovie
+import com.example.soumovie.data.Watchlist
 import com.example.soumovie.model.Movie
 import com.example.soumovie.pages.MovieDetails
 import com.example.soumovie.pages.TermsAndConditions
 import com.example.soumovie.pages.Movies
 import com.example.soumovie.pages.SearchMovies
 import com.example.soumovie.pages.SplashScreen
+import com.example.soumovie.pages.SavedMovies
 import com.example.soumovie.ui.theme.SouMovieTheme
 
 class MainActivity : ComponentActivity() {
@@ -51,6 +53,10 @@ class MainActivity : ComponentActivity() {
                     composable("SearchMovies") {
 
                         SearchMovies(navController, appContainer.savedMovieRepository)
+                    }
+                    composable("Watchlist") {
+
+                        SavedMovies(navController, appContainer.savedMovieRepository)
                     }
                 }
             }

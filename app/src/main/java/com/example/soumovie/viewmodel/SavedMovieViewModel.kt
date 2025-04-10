@@ -37,9 +37,9 @@ class SavedMoviesViewModel(
     }
 
     // Function to delete a movie
-    fun deleteMovie(movie: MovieDetails) {
+    fun deleteMovie(movie: SavedMovie) {
         viewModelScope.launch {
-            repository.deleteMovie(movie.toSavedMovie())
+            repository.deleteMovie(movie)
         }
     }
 
