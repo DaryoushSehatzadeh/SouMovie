@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [SavedMovie::class], version = 2, exportSchema = false)
+@Database(entities = [SavedMovie::class], version = 5, exportSchema = false)
 abstract class Watchlist : RoomDatabase() {
     abstract fun savedMovieDAO(): SavedMovieDAO
     companion object {

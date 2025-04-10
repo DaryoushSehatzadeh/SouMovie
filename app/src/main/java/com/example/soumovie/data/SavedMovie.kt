@@ -1,12 +1,18 @@
 package com.example.soumovie.data
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "watchlist")
+
+@Entity(
+    tableName = "Watchlist",
+    indices = [Index(value = ["movieId"], unique = true)] // Enforce uniqueness on movieId
+)
 data class SavedMovie(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val movieId: Int,
     val name: String,
     val rating: Double,
     val posterPath: String

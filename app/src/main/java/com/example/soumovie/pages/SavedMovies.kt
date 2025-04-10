@@ -27,10 +27,6 @@ fun SavedMovies(navController: NavHostController, repository: SavedMovieReposito
 
     val watchlist by viewModel.getWatchlist().observeAsState(emptyList())
 
-    val sortedWatchlist by remember(watchlist) {
-        derivedStateOf { watchlist.reversed() }
-    }
-
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         Column(
             modifier = Modifier
@@ -44,7 +40,7 @@ fun SavedMovies(navController: NavHostController, repository: SavedMovieReposito
                 modifier = Modifier.padding(16.dp)
             )
 
-            if (sortedWatchlist.isEmpty()) {
+            if (watchlist.isEmpty()) {
                 Text(
                     text = "No movies added yet.",
                     color = Color.White,
@@ -52,7 +48,7 @@ fun SavedMovies(navController: NavHostController, repository: SavedMovieReposito
                 )
             } else {
                 LazyColumn {
-                    items(sortedWatchlist) { movie ->
+                    items(watchlist) { movie ->
                         WatchlistItem(movie, navController, viewModel)
                     }
                 }

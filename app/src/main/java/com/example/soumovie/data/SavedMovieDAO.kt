@@ -16,6 +16,6 @@ interface SavedMovieDAO {
     @Delete
     suspend fun delete(item: SavedMovie)
 
-    @Query("SELECT * from watchlist ORDER BY name ASC")
+    @Query("SELECT * from watchlist ORDER BY id ASC")
     fun getWatchlist(): Flow<List<SavedMovie>>
 }

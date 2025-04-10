@@ -22,7 +22,8 @@ class SavedMoviesViewModel(
 
     private fun MovieDetails.toSavedMovie(): SavedMovie {
         return SavedMovie(
-            id = this.id,                     // Save the same `id` as `movieId` (or you can customize)
+            id = 0,
+            movieId = this.id,                     // Save the same `id` as `movieId` (or you can customize)
             name = this.title,                     // Map `title` from Movie to `name` in SavedMovie
             rating = this.voteAverage,             // Map `vote_average` from Movie to `rating` in SavedMovie
             posterPath = this.posterPath ?: ""     // Use `posterPath`, default to "" if null
