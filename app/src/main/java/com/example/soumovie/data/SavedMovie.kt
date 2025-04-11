@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "Watchlist",
-    indices = [Index(value = ["movieId"], unique = true)] // Enforce uniqueness on movieId
+    indices = [Index(value = ["movieId"], unique = true)]
 )
 data class SavedMovie(
     @PrimaryKey(autoGenerate = true)

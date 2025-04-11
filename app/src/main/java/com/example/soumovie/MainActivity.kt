@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
 
                         SearchMovies(navController, appContainer.savedMovieRepository)
                     }
-                    composable("Watchlist") {
+                    composable("SavedMovies") {
 
                         SavedMovies(navController, appContainer.savedMovieRepository)
                     }

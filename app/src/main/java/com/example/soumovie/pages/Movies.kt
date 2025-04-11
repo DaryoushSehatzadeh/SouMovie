@@ -23,9 +23,16 @@ import androidx.navigation.NavHostController
 import com.example.soumovie.R
 import com.example.soumovie.viewmodel.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -64,7 +71,7 @@ fun Movies(navController: NavHostController, repository: SavedMovieRepository) {
             modifier = Modifier
                 .fillMaxSize()
                 .offset(y = (-100).dp)
-                .background(Color.Black),
+                .background(MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -79,23 +86,26 @@ fun Movies(navController: NavHostController, repository: SavedMovieRepository) {
 
             // Display loading spinner if data is being fetched
             if (popularMovies?.isEmpty() == true || allMovies?.isEmpty() == true) {
+                Spacer(Modifier.height(300.dp))
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             } else {
                 // Display Top 10 Popular Movies
                 Text(
                     text = "Top 10 Popular Movies",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 20.sp,
                     modifier = Modifier.padding(8.dp)
                 )
 
                 // Display popular movies in a LazyColumn
                 LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(popularMovies ?: emptyList()) { movie ->  // Ensure allMovies is a List
+                    items(popularMovies ?: emptyList()) { movie ->
                         MovieItem(
                             movie = movie,
-                            navController = navController
-                        )  // Passing MovieResult object
+                            navController = navController,
+                            viewModel = viewModel,
+                            isSaved = { watchlist.any { it.movieId == movie.id } }
+                        )
                     }
                 }
 
@@ -105,17 +115,19 @@ fun Movies(navController: NavHostController, repository: SavedMovieRepository) {
                 // Display All Movies (capped at 100)
                 Text(
                     text = "All Movies",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 20.sp,
                     modifier = Modifier.padding(16.dp)
                 )
 
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(allMovies ?: emptyList()) { movie ->  // Ensure allMovies is a List
+                    items(allMovies ?: emptyList()) { movie ->
                         MovieItem(
                             movie = movie,
-                            navController = navController
-                        )  // Passing MovieResult object
+                            navController = navController,
+                            viewModel = viewModel,
+                            isSaved = { watchlist.any { it.movieId == movie.id } }
+                        )
                     }
                 }
             }
@@ -133,13 +145,13 @@ fun Movies(navController: NavHostController, repository: SavedMovieRepository) {
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun MovieItem(movie: Result, navController: NavController) {
+fun MovieItem(movie: Result, navController: NavController, viewModel: SavedMoviesViewModel, isSaved: () -> Boolean) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .background(Color.Gray, shape = RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
             .padding(16.dp)
             .clickable {
                 // Navigate to movie details and pass the movie id
@@ -151,15 +163,14 @@ fun MovieItem(movie: Result, navController: NavController) {
         Box(
             modifier = Modifier
                 .size(80.dp)
-                .background(Color.White)  // Set the background color to white
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://image.tmdb.org/t/p/w500/${movie.posterPath}")  // Construct the URL
+                    .data("https://image.tmdb.org/t/p/w500/${movie.posterPath}")
                     .crossfade(true)
                     .build(),
                 contentDescription = "Movie Poster",
-                modifier = Modifier.fillMaxSize(),  // Fill the Box size with the image
+                modifier = Modifier.fillMaxSize(),
             )
         }
 
@@ -167,12 +178,27 @@ fun MovieItem(movie: Result, navController: NavController) {
         Spacer(modifier = Modifier.width(16.dp))
 
         // Movie title
-        Column {
-            Text(text = movie.title, color = Color.White, fontSize = 16.sp)
+        Column(modifier = Modifier.width(140.dp))
+        {
+            Text(text = movie.title, color = MaterialTheme.colorScheme.onPrimary, fontSize = 16.sp)
             Text(
                 text = "Rating: ${String.format("%.1f", movie.voteAverage)}",
-                color = Color.White.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
                 fontSize = 14.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.width(32.dp))
+
+        // Save Button
+        IconButton(
+            onClick = { if (!isSaved()) viewModel.addMovie(movie) else viewModel.deleteMovie(movie) },
+            modifier = Modifier.align(Alignment.CenterVertically)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Favorite,
+                contentDescription = "Save to Watchlist",
+                tint = if (isSaved()) Color.Red else MaterialTheme.colorScheme.onPrimary
             )
         }
     }

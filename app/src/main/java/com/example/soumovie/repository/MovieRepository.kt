@@ -17,7 +17,7 @@ class MovieRepository {
         return response.results  // Extract only the List<Result> from the response
     }
 
-    // Fetch all movies (you may need to define this in your API interface)
+    // Fetch all movies
     suspend fun getAllMovies(): List<com.example.soumovie.data.Result> {
 
         val allMovies = mutableListOf<com.example.soumovie.data.Result>()
@@ -32,17 +32,17 @@ class MovieRepository {
 
     // Fetch movie details by ID
     suspend fun getMovieDetails(id: Int): MovieDetails {
-        return apiService.getMovieDetails(id) // Assuming this method exists in TMDBApi
+        return apiService.getMovieDetails(id)
     }
 
     // Fetch cast by movie ID
     suspend fun getCast(id: Int): CastDetails {
-        return apiService.getCast(id) // Assuming this method exists in TMDBApi
+        return apiService.getCast(id)
     }
 
     // Fetch reviews by movie ID
     suspend fun getReviews(id: Int): Reviews {
-        return apiService.getReviews(id) // Assuming this method exists in TMDBApi
+        return apiService.getReviews(id)
     }
 
     // Search movies

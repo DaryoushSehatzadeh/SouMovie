@@ -40,27 +40,27 @@ fun SearchMovies(navController: NavController, repository: SavedMovieRepository)
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = 100.dp) // 给底部 NavBar 留空间
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(48.dp))
 
             // 搜索输入框
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                label = { Text("Search Movies", color = Color.White) },
+                label = { Text("Search Movies", color = MaterialTheme.colorScheme.onPrimary) },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                textStyle = LocalTextStyle.current.copy(color = Color.White),
+                textStyle = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onPrimary),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.Gray
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary.copy(0.5f)
                 )
             )
 
@@ -70,14 +70,18 @@ fun SearchMovies(navController: NavController, repository: SavedMovieRepository)
             if (searchResults.isEmpty() && searchQuery.text.isNotBlank()) {
                 Text(
                     text = "No movies found.",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(16.dp)
                 )
             } else {
                 LazyColumn {
                     items(searchResults) { movie ->
-                        MovieItem(movie = movie, navController = navController)
+                        MovieItem(movie = movie,
+                            navController = navController,
+                            viewModel = viewModel,
+                            isSaved = { watchlist.any { it.movieId == movie.id } }
+                        )
                     }
                 }
             }

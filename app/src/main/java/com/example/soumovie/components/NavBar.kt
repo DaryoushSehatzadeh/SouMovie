@@ -1,5 +1,6 @@
 package com.example.soumovie.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -29,8 +30,9 @@ fun NavBar(navController: NavController, currentPage: String) {
             .fillMaxWidth()
             .height(100.dp),
         containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = Color.White
+        contentColor = MaterialTheme.colorScheme.onPrimary
     ){
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -51,8 +53,8 @@ fun NavBar(navController: NavController, currentPage: String) {
             )
             NavBarItem(
                 icon = Icons.Filled.Favorite,
-                description = "Watchlist",
-                destination = "watchlist",
+                description = "SavedMovies",
+                destination = "SavedMovies",
                 navController = navController,
                 currentPage = currentPage
             )
@@ -80,7 +82,7 @@ fun NavBarItem(
         Icon(
             imageVector = icon,
             contentDescription = description,
-            tint = if (isSelected) Color.Gray else Color.White
+            tint = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.3f)
         )
     }
 }

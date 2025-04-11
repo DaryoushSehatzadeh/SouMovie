@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -34,14 +36,14 @@ fun TermsAndConditions(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black) // Ensures background is black
+            .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.systemBars) // Prevents overlap with status bar
             .padding(16.dp)
     ) {
         // **Top App Bar (Title)**
         TopAppBar(
-            title = { Text("Terms & Conditions", color = Color.White) },
-            modifier = Modifier.background(Color.Black)
+            title = { Text("Terms & Conditions", color = MaterialTheme.colorScheme.onPrimary) },
+            modifier = Modifier.background(MaterialTheme.colorScheme.primary)
         )
 
         Spacer(modifier = Modifier.height(16.dp)) // Space after title
@@ -49,26 +51,30 @@ fun TermsAndConditions(navController: NavController) {
         // **Scrollable Terms & Conditions Text**
         Box(
             modifier = Modifier
-                .weight(1f) // Takes available space
+                .weight(1f)
                 .verticalScroll(scrollState)
         ) {
             Text(
                 text = stringResource(id = R.string.terms_and_conditions),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 16.sp,
-                lineHeight = 24.sp,  // Ensures proper spacing between lines
+                lineHeight = 24.sp,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp)) // Space before button
+        Spacer(modifier = Modifier.height(16.dp))
 
         // **Accept Button (Inactive until scrolled to bottom)**
         Button(
             onClick = { navController.navigate("Movies") },
             modifier = Modifier.fillMaxWidth()
                 .navigationBarsPadding(),
-            enabled = isAtBottom // Button becomes enabled only if scrolled to the bottom
+            enabled = isAtBottom, // Button becomes enabled only if scrolled to the bottom
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
         ) {
             Text("Accept")
         }

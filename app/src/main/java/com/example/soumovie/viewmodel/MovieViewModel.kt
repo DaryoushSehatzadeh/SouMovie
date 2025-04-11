@@ -28,8 +28,7 @@ class MovieViewModel : ViewModel() {
     val searchResults: LiveData<List<Result>> = _searchResults
 
     fun loadPopularMovies() {
-        // Call your API and update the LiveData
-        // Assume fetchPopularMovies() is a suspend function to fetch data
+        // Call API and update the LiveData
         viewModelScope.launch {
             try {
                 _popularMovies.value = repository.getPopularMovies()

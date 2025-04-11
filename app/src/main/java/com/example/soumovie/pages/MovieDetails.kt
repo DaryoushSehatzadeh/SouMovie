@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -130,7 +131,7 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(MaterialTheme.colorScheme.background),
     ) {
         Box(
             modifier = Modifier
@@ -144,16 +145,15 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                     .padding(16.dp)
                     .offset(y = 25.dp)
                     .background(
-                        color = Color.Black.copy(alpha = 0.6f),
+                        color = MaterialTheme.colorScheme.background,
                         shape = CircleShape
                     )
                     .size(40.dp)
-                    .shadow(4.dp, shape = CircleShape)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }
@@ -200,33 +200,56 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                     // Movie Title
                     Text(
                         text = movie.title,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
-                            .align(Alignment.Center)
-                            .offset(75.dp, (-85).dp)
-                            .width(200.dp),
+                            .align(Alignment.TopCenter)
+                            .offset(75.dp, 290.dp)
+                            .width(180.dp),
                         style = MaterialTheme.typography.titleLarge
                     )
 
-                    // Save Button
-                    IconButton(
-                        onClick = { viewModel.addMovie(movie) },
+                    // Save button
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.Center)
-                            .offset(x = 40.dp, y = (-10).dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Favorite,
-                            contentDescription = "Save to Watchlist",
-                            tint = Color.White
-                        )
+                            .fillMaxSize()
+                            .offset(x = 60.dp)
+                    ){
+                        Row(
+                            modifier = Modifier
+                                .clickable {
+                                    if (watchlist.any { it.movieId == movie.id }) {
+                                        viewModel.deleteMovie(movie)
+                                    } else {
+                                        viewModel.addMovie(movie)
+                                    }
+                                }
+                                .align(Alignment.Center)
+                                .width(80.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = if (watchlist.any { it.movieId == movie.id }) "Saved" else "Save",
+                                color = if (watchlist.any { it.movieId == movie.id }) Color.Red else MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Icon(
+                                imageVector = Icons.Filled.Favorite,
+                                contentDescription = "Add to Saved Movies",
+                                tint = if (watchlist.any { it.movieId == movie.id }) Color.Red else MaterialTheme.colorScheme.onPrimary
+                            )
+
+
+                        }
                     }
+
 
                     // Release data and run time
                     Text(
                         text = "Release Year: ${movie.releaseDate.take(4)} \t\t\t\t" +
                                 "Runtime: ${if (movie.runtime > 0) "${movie.runtime} minutes" else "Not Listed"}",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .align(Alignment.Center)
                             .offset(y = 50.dp),
@@ -246,7 +269,7 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                             modifier = Modifier
                                 .offset(x = (-25).dp)
                                 .clickable { activeTab = ActiveTab.DESCRIPTION },
-                            color = if (activeTab == ActiveTab.DESCRIPTION) Color.White else Color.DarkGray
+                            color = if (activeTab == ActiveTab.DESCRIPTION) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(0.3f)
                         )
 
                         Text(
@@ -254,7 +277,7 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                             modifier = Modifier
                                 .offset(x = 20.dp)
                                 .clickable { activeTab = ActiveTab.REVIEWS },
-                            color = if (activeTab == ActiveTab.REVIEWS) Color.White else Color.DarkGray
+                            color = if (activeTab == ActiveTab.REVIEWS) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(0.3f)
                         )
 
                         Text(
@@ -262,7 +285,7 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                             modifier = Modifier
                                 .offset(x = 80.dp)
                                 .clickable { activeTab = ActiveTab.CAST },
-                            color = if (activeTab == ActiveTab.CAST) Color.White else Color.DarkGray
+                            color = if (activeTab == ActiveTab.CAST) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(0.3f)
                         )
                     }
                     // Text box for description, etc
@@ -276,18 +299,19 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                         Box(
                             modifier = Modifier
                                 .width((LocalConfiguration.current.screenWidthDp * 0.9).dp)
-                                .height(200.dp) // Adjust size as needed
+                                .height(200.dp)
                                 .background(Color.White)
-                                .padding(16.dp) // Padding for the content inside
+                                .padding(16.dp)
                                 .align(Alignment.CenterHorizontally)
                         ) {
                             Column(
-                                modifier = Modifier.verticalScroll(rememberScrollState()) // Enable vertical scroll
+                                modifier = Modifier.verticalScroll(rememberScrollState())
                             ) {
                                 when (activeTab) {
                                     ActiveTab.DESCRIPTION -> {
                                         Text(
                                             text = description,
+                                            color = MaterialTheme.colorScheme.onPrimary,
                                             style = MaterialTheme.typography.bodyLarge
                                         )
                                     }
@@ -299,7 +323,7 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                                                     modifier = Modifier
                                                         .fillMaxWidth()
                                                         .padding(16.dp)
-                                                        .background(color = Color.LightGray)
+                                                        .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                                                 ) {
                                                     Column(
                                                         modifier = Modifier
@@ -311,13 +335,13 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                                                                     LocalContext.current
                                                                 )
                                                                     .data(it.profileImageUrl)
-                                                                    .crossfade(true) // Enable crossfade for a smooth transition
+                                                                    .crossfade(true)
                                                                     .build()
                                                             ),
                                                             contentDescription = "Picture of ${it.actorName}",
                                                             modifier = Modifier
                                                                 .size(80.dp),
-                                                            contentScale = ContentScale.Fit // or ContentScale.Fit based on your needs
+                                                            contentScale = ContentScale.Fit
                                                         )
                                                     }
 
@@ -331,13 +355,13 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                                                             modifier = Modifier.align(Alignment.Start),
                                                             text = it.actorName,
                                                             style = MaterialTheme.typography.bodyMedium,
-                                                            color = Color.Black
+                                                            color = MaterialTheme.colorScheme.onPrimary
                                                         )
                                                         Text(
                                                             modifier = Modifier.align(Alignment.Start),
                                                             text = it.character,
                                                             style = MaterialTheme.typography.bodyMedium,
-                                                            color = Color.Black
+                                                            color = MaterialTheme.colorScheme.onPrimary.copy(0.5f)
                                                         )
                                                     }
                                                 }
@@ -353,7 +377,7 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                                                         modifier = Modifier
                                                             .fillMaxWidth()
                                                             .padding(16.dp)
-                                                            .background(color = Color.LightGray)
+                                                            .background(color = MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
                                                     ) {
                                                         Column(
                                                             modifier = Modifier
@@ -364,7 +388,7 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                                                                 modifier = Modifier.align(Alignment.Start),
                                                                 text = it.author,
                                                                 style = MaterialTheme.typography.bodyMedium,
-                                                                color = Color.Black
+                                                                color = MaterialTheme.colorScheme.onPrimary
                                                             )
 
                                                             Spacer(modifier = Modifier.height(10.dp))
@@ -373,7 +397,7 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                                                                 modifier = Modifier.align(Alignment.Start),
                                                                 text = it.content,
                                                                 style = MaterialTheme.typography.bodyMedium,
-                                                                color = Color.Black
+                                                                color = MaterialTheme.colorScheme.onPrimary
                                                             )
                                                         }
                                                     }
@@ -382,6 +406,7 @@ fun MovieDetails(movieId: Int, navController: NavController, repository: SavedMo
                                         } else {
                                             Text(
                                                 text = "There are no reviews for this movie",
+                                                color = MaterialTheme.colorScheme.onPrimary,
                                                 style = MaterialTheme.typography.bodyLarge
                                             )
                                         }

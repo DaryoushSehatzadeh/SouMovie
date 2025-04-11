@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.soumovie.data.AppContainer
 import com.example.soumovie.data.MovieDetails
+import com.example.soumovie.data.Result
 import com.example.soumovie.data.SavedMovie
 import com.example.soumovie.data.SavedMovieDAO
 import com.example.soumovie.model.Movie
@@ -23,10 +24,20 @@ class SavedMoviesViewModel(
     private fun MovieDetails.toSavedMovie(): SavedMovie {
         return SavedMovie(
             id = 0,
-            movieId = this.id,                     // Save the same `id` as `movieId` (or you can customize)
-            name = this.title,                     // Map `title` from Movie to `name` in SavedMovie
-            rating = this.voteAverage,             // Map `vote_average` from Movie to `rating` in SavedMovie
-            posterPath = this.posterPath ?: ""     // Use `posterPath`, default to "" if null
+            movieId = this.id,
+            name = this.title,
+            rating = this.voteAverage,
+            posterPath = this.posterPath
+        )
+    }
+
+    private fun Result.toSavedMovie(): SavedMovie {
+        return SavedMovie(
+            id = 0,
+            movieId = this.id,
+            name = this.title,
+            rating = this.voteAverage,
+            posterPath = this.posterPath
         )
     }
 
@@ -37,10 +48,31 @@ class SavedMoviesViewModel(
         }
     }
 
+    // Function to insert a movie
+    fun addMovie(movie: Result) {
+        viewModelScope.launch {
+            repository.saveMovie(movie.toSavedMovie())
+        }
+    }
+
     // Function to delete a movie
     fun deleteMovie(movie: SavedMovie) {
         viewModelScope.launch {
             repository.deleteMovie(movie)
+        }
+    }
+
+    // Function to delete a movie
+    fun deleteMovie(movie: MovieDetails) {
+        viewModelScope.launch {
+            repository.deleteMovie(movie.toSavedMovie())
+        }
+    }
+
+    // Function to delete a movie
+    fun deleteMovie(movie: Result) {
+        viewModelScope.launch {
+            repository.deleteMovie(movie.toSavedMovie())
         }
     }
 
